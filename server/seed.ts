@@ -288,16 +288,16 @@ export function seedDemo(): boolean {
 
   // A few reactions so the feed has life in it.
   const reactionPlan: [number, string, number][] = [
-    [2, '🔥', 0],
-    [2, '😂', 4],
-    [4, '🔥', 2],
-    [4, '💯', 5],
-    [7, '🤯', 1],
-    [7, '🔥', 6],
-    [6, '😭', 0],
-    [6, '💯', 3],
-    [1, '💀', 5],
-    [8, '😭', 2],
+    [2, '✓', 0],
+    [2, '✓', 4],
+    [4, '✓', 2],
+    [4, '✓', 5],
+    [7, '✓', 1],
+    [7, '✓', 6],
+    [6, '✓', 0],
+    [6, '✓', 3],
+    [1, '✓', 5],
+    [8, '✓', 2],
   ]
   for (const [bookIndex, emoji, memberIndex] of reactionPlan) {
     const bookId = `bk_seed_${bookIndex}`

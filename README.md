@@ -1,13 +1,13 @@
-# 📚 Book club
+# 3SixBookClub
 
 A small, self-hosted site for a book club. One book a month, everyone rates it out of five,
-everyone says what they thought — and the site turns all of that into charts, heatmaps and
-awards nobody asked for.
+everyone says what they thought — and the site turns all of that into charts and standings.
 
-No accounts, no SaaS, no megarepo. One Node process, one SQLite file, and a React front end
+Black and white, nothing shouting. One Node process, one SQLite file, and a React front end
 that gets served by the same process.
 
-<!-- Run `npm run dev`, open http://localhost:5173, and it is already full of demo data. -->
+The house mark is an original gorgon head drawn for this project (`src/components/Medusa.tsx`),
+not the Versace trademark — swap in a licensed asset if the club needs the real one.
 
 ## What is in it
 
@@ -86,16 +86,17 @@ Copy `.env.example` to `.env` — every value is optional.
 | ---------------- | ------------------- | --------------------------------------------------- |
 | `PORT`           | `3001`              | Port for the API and the built site                 |
 | `DB_PATH`        | `data/club.db`      | Where the SQLite file lives                         |
-| `CLUB_NAME`      | `The Book Club`     | Shown in the header and browser tab                 |
+| `CLUB_NAME`      | `3SixBookClub`      | Shown in the header and browser tab                 |
 | `CLUB_TAGLINE`   | `One book a month…` | Shown in the footer                                 |
 | `CLUB_PASSCODE`  | _(empty)_           | If set, required to join as a new member            |
 | `SEED_DEMO`      | `1`                 | `0` skips loading the demo club on a fresh database |
 
 ## How members identify themselves
 
-There is no sign-up, no password and no email. A member picks a name and an emoji, and the
-browser remembers which member it is with `localStorage`. The server checks the member id
-sent with every write, so members can only edit their own reviews and profile.
+There is no sign-up, no password and no email. A member picks a name, and the browser
+remembers which member it is with `localStorage`. Avatars are just the member's initials.
+The server checks the member id sent with every write, so members can only edit their own
+reviews and profile.
 
 That is deliberately enough for a group of friends sharing a link, and deliberately not
 enough for anything public. If you want real auth, `server/api.ts` is the only file that

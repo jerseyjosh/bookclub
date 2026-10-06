@@ -60,7 +60,7 @@ export function Clubhouse() {
   if (!books.length) {
     return (
       <>
-        <EmptyState icon="📚" title="The shelf is empty">
+        <EmptyState title="The shelf is empty">
           {me ? (
             <>
               <p className="mb-4">
@@ -98,7 +98,7 @@ export function Clubhouse() {
             <div className="flex flex-col gap-5 p-5 sm:flex-row sm:p-6">
               <Link
                 to={`/books/${current.id}`}
-                className="mx-auto h-56 w-36 shrink-0 overflow-hidden rounded-lg border border-line shadow-lift transition hover:scale-[1.02] sm:mx-0 sm:h-64 sm:w-44"
+                className="mx-auto h-56 w-36 shrink-0 overflow-hidden border border-line shadow-lift transition hover:opacity-90 sm:mx-0 sm:h-64 sm:w-44"
               >
                 <Cover title={current.title} author={current.author} coverUrl={current.coverUrl} />
               </Link>
@@ -138,16 +138,16 @@ export function Clubhouse() {
                 <div className="mt-5">
                   <div className="mb-2 flex items-center justify-between text-xs">
                     <span className="text-muted">Club progress</span>
-                    <span className="text-amber">{clubProgress}%</span>
+                    <span className="text-ink">{clubProgress}%</span>
                   </div>
                   <ProgressBar percent={clubProgress} />
                   <div className="mt-3 flex items-center justify-between">
                     <AvatarStack members={currentProgress.map((p) => members.find((m) => m.id === p.memberId)).filter((m): m is Member => Boolean(m))} />
                     <button
                       onClick={() => setShowProgress((v) => !v)}
-                      className="cursor-pointer text-xs text-faint transition hover:text-amber"
+                      className="cursor-pointer text-xs text-faint transition hover:text-ink"
                     >
-                      {showProgress ? 'Hide' : 'Who’s where?'}
+                      {showProgress ? 'Hide' : 'Breakdown'}
                     </button>
                   </div>
 
@@ -166,7 +166,6 @@ export function Clubhouse() {
                               <ProgressBar
                                 percent={entry.percent}
                                 className="flex-1"
-                                color={member ? `linear-gradient(90deg, ${member.color}55, ${member.color})` : undefined}
                               />
                               <span className="w-9 text-right text-xs text-faint">
                                 {entry.percent}%
@@ -192,7 +191,7 @@ export function Clubhouse() {
           {/* Next up */}
           <aside className="flex flex-col gap-4">
             <div className="card p-5">
-              <SectionHeading title="What’s next" />
+              <SectionHeading title="Shortlist" />
               {topNominations.length === 0 ? (
                 <p className="text-sm text-muted">
                   No nominations yet.{' '}
@@ -206,8 +205,8 @@ export function Clubhouse() {
                   {topNominations.map((nomination, index) => (
                     <li key={nomination.id} className="flex items-start gap-3">
                       <span
-                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
-                          index === 0 ? 'bg-amber/20 text-amber' : 'bg-raised text-faint'
+                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-xs ${
+                          index === 0 ? 'bg-ink text-void' : 'bg-raised text-faint'
                         }`}
                       >
                         {nomination.voterIds.length}
@@ -228,7 +227,7 @@ export function Clubhouse() {
             </div>
 
             <div className="card p-5">
-              <SectionHeading title="Club at a glance" />
+              <SectionHeading title="At a glance" />
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <dt className="text-xs text-faint">Books read</dt>
@@ -236,7 +235,7 @@ export function Clubhouse() {
                 </div>
                 <div>
                   <dt className="text-xs text-faint">Club average</dt>
-                  <dd className="stat-num text-amber">
+                  <dd className="stat-num">
                     {clubAvg === null ? '—' : clubAvg.toFixed(2)}
                   </dd>
                 </div>
@@ -260,8 +259,8 @@ export function Clubhouse() {
       {superlatives.length > 0 && (
         <section>
           <SectionHeading
-            title="The awards nobody asked for"
-            subtitle="Automatically recalculated after every review."
+            title="Standings"
+            subtitle="Recalculated after every review."
           />
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {superlatives.map((item) => {
@@ -295,8 +294,8 @@ export function Clubhouse() {
       {/* ---------------------------------------------------------- */}
       <section className="card p-5 sm:p-6">
         <SectionHeading
-          title="The story so far"
-          subtitle="Every pick since we started, scored out of five."
+          title="Rating trend"
+          subtitle="Every pick, scored out of five."
         />
         <RatingTrend books={books} members={members} reviews={reviews} />
       </section>
@@ -307,9 +306,9 @@ export function Clubhouse() {
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
           <SectionHeading
-            title="Latest from the group chat"
+            title="Recent reviews"
             action={
-              <Link to="/books" className="text-sm text-amber transition hover:underline">
+              <Link to="/books" className="text-sm text-muted transition hover:text-ink">
                 All books →
               </Link>
             }
@@ -324,16 +323,12 @@ export function Clubhouse() {
                 reactions={reactions}
               />
             ))}
-            {!latestReviews.length && (
-              <EmptyState icon="✍️" title="No reviews yet">
-                Be the first to say something controversial.
-              </EmptyState>
-            )}
+            {!latestReviews.length && <EmptyState title="No reviews yet" />}
           </div>
         </div>
 
         <aside>
-          <SectionHeading title="Best taste" subtitle="Highest average rating." />
+          <SectionHeading title="Leaderboard" subtitle="Highest average rating." />
           <div className="flex flex-col gap-3">
             {leaderboard.map((entry, index) => (
               <Link
@@ -350,7 +345,7 @@ export function Clubhouse() {
                     <Stars value={entry.stats.average} size={11} />
                   </p>
                 </div>
-                <span className="font-display text-amber">
+                <span className="font-display text-ink">
                   {entry.stats.average?.toFixed(2) ?? '—'}
                 </span>
               </Link>
@@ -399,7 +394,7 @@ function YourProgress({
     <div className="mt-4 border-t border-line pt-4">
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted">Your progress</span>
-        <span className="text-amber">{value}%</span>
+        <span className="text-ink">{value}%</span>
       </div>
       <input
         type="range"

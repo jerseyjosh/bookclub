@@ -1,26 +1,31 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-void: #100e0c;
-  --color-surface: #191612;
-  --color-raised: #221d17;
-  --color-high: #2c261e;
-  --color-line: #3a3227;
-  --color-ink: #f6efe3;
-  --color-muted: #a89c88;
-  --color-faint: #7d7264;
-  --color-amber: #e0a458;
-  --color-amber-soft: #f2cd93;
-  --color-sage: #7fb069;
-  --color-rose: #d96c6c;
-  --color-sky: #6c8ed9;
+  /* Monochrome house palette. */
+  --color-void: #0a0a0a;
+  --color-surface: #0f0f0f;
+  --color-raised: #151515;
+  --color-high: #1c1c1c;
+  --color-line: #262626;
+  --color-ink: #f4f4f4;
+  --color-muted: #9a9a9a;
+  --color-faint: #6a6a6a;
+
+  /* `amber` is the single accent and it is white. */
+  --color-amber: #f4f4f4;
+  --color-amber-soft: #cfcfcf;
+  /* Muted steps, kept apart so charts and heatmaps stay readable. */
+  --color-sage: #c9c9c9;
+  --color-sky: #8f8f8f;
+  /* Reserved for destructive actions and errors. */
+  --color-rose: #c0564d;
 
   --font-display:
-    'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, ui-serif, serif;
+    'Didot', 'Bodoni MT', 'Playfair Display', 'Iowan Old Style', Georgia, ui-serif, serif;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  --shadow-lift: 0 30px 60px -35px rgb(0 0 0 / 0.9);
+  --shadow-lift: 0 30px 60px -40px rgb(0 0 0 / 0.95);
 }
 
 @layer base {
@@ -35,11 +40,6 @@
     font-family: var(--font-sans);
     color: var(--color-ink);
     background-color: var(--color-void);
-    background-image:
-      radial-gradient(80rem 50rem at 12% -10%, rgb(224 164 88 / 0.1), transparent 60%),
-      radial-gradient(60rem 40rem at 95% 0%, rgb(108 142 217 / 0.08), transparent 55%),
-      radial-gradient(70rem 60rem at 50% 120%, rgb(127 176 105 / 0.07), transparent 60%);
-    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -47,17 +47,17 @@
   h2,
   h3 {
     font-family: var(--font-display);
+    font-weight: 400;
     letter-spacing: -0.01em;
   }
 
   ::selection {
-    background: rgb(224 164 88 / 0.3);
+    background: rgb(244 244 244 / 0.2);
   }
 
   *:focus-visible {
-    outline: 2px solid var(--color-amber);
-    outline-offset: 2px;
-    border-radius: 4px;
+    outline: 1px solid var(--color-ink);
+    outline-offset: 3px;
   }
 
   input,
@@ -68,7 +68,7 @@
   }
 
   input[type='range'] {
-    accent-color: var(--color-amber);
+    accent-color: var(--color-ink);
   }
 
   ::-webkit-scrollbar {
@@ -80,27 +80,26 @@
   }
   ::-webkit-scrollbar-thumb {
     background: var(--color-high);
-    border-radius: 999px;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-line bg-surface/70 backdrop-blur-sm;
+    @apply border border-line bg-surface/60;
   }
 
   .card-hover {
-    @apply transition duration-200 hover:-translate-y-0.5 hover:border-amber/40 hover:shadow-lift;
+    @apply transition duration-200 hover:border-ink/30;
   }
 
   .btn {
-    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border border-line
-      bg-raised px-4 py-2 text-sm font-medium text-ink transition
-      hover:border-amber/50 hover:bg-high disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 border border-line bg-transparent
+      px-4 py-2 text-[0.7rem] font-medium tracking-[0.14em] text-ink uppercase transition
+      hover:border-ink/50 hover:bg-raised disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .btn-primary {
-    @apply border-amber/60 bg-amber/90 text-void hover:border-amber hover:bg-amber;
+    @apply border-ink bg-ink text-void hover:border-ink hover:bg-white;
   }
 
   .btn-ghost {
@@ -108,29 +107,33 @@
   }
 
   .btn-sm {
-    @apply px-3 py-1.5 text-xs;
+    @apply px-3 py-1.5 text-[0.65rem];
   }
 
   .input {
-    @apply w-full rounded-xl border border-line bg-void/60 px-3 py-2 text-sm text-ink
-      placeholder:text-faint focus:border-amber/60 focus:outline-none;
+    @apply w-full border border-line bg-transparent px-3 py-2 text-sm text-ink
+      placeholder:text-faint focus:border-ink/50 focus:outline-none;
   }
 
   .label {
-    @apply mb-1.5 block text-xs font-semibold tracking-wide text-muted uppercase;
+    @apply mb-2 block text-[0.65rem] font-medium tracking-[0.18em] text-faint uppercase;
   }
 
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full border border-line bg-raised/80 px-2.5 py-1
-      text-xs text-muted;
+    @apply inline-flex items-center gap-1.5 border border-line px-2.5 py-1 text-[0.65rem]
+      tracking-[0.12em] text-muted uppercase;
   }
 
   .link {
-    @apply text-amber underline decoration-amber/30 underline-offset-4 transition hover:decoration-amber;
+    @apply text-ink underline decoration-ink/30 underline-offset-4 transition hover:decoration-ink;
   }
 
   .stat-num {
     @apply font-display text-3xl leading-none text-ink;
+  }
+
+  .eyebrow {
+    @apply text-[0.65rem] font-medium tracking-[0.24em] text-faint uppercase;
   }
 }
 
@@ -138,21 +141,10 @@
   text-wrap: balance;
 }
 
-/* Faint paper grain over the whole page. */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -161,7 +153,7 @@ body::after {
 }
 
 .animate-rise {
-  animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation: rise 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

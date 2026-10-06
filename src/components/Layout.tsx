@@ -2,13 +2,14 @@ import { useEffect } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useClub } from '../lib/club.tsx'
 import { IdentityButton } from './Identity.tsx'
+import { Wordmark } from './Medusa.tsx'
 import { ToastViewport } from './ui.tsx'
 
 const NAV = [
-  { to: '/', label: 'Clubhouse', end: true },
-  { to: '/books', label: 'The shelf' },
+  { to: '/', label: 'Overview', end: true },
+  { to: '/books', label: 'Books' },
   { to: '/members', label: 'Members' },
-  { to: '/vote', label: 'What’s next' },
+  { to: '/vote', label: 'Shortlist' },
 ]
 
 function ScrollToTop() {
@@ -21,12 +22,8 @@ function ScrollToTop() {
 
 export function Layout() {
   const { snapshot, loading, error, me } = useClub()
-  const { pathname } = useLocation()
 
   const nominations = snapshot?.nominations.length ?? 0
-  const topVotes = snapshot
-    ? Math.max(0, ...snapshot.nominations.map((n) => n.voterIds.length))
-    : 0
   const hasVoted =
     snapshot && me ? snapshot.nominations.some((n) => n.voterIds.includes(me.id)) : false
   const nudge = nominations > 0 && !hasVoted
@@ -35,55 +32,50 @@ export function Layout() {
     <div className="flex min-h-dvh flex-col">
       <ScrollToTop />
 
-      <header className="sticky top-0 z-[60] border-b border-line/70 bg-void/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden>
-              📚
-            </span>
-            <span className="font-display text-lg leading-none">
-              {snapshot?.club.name ?? 'The Book Club'}
-            </span>
+      <header className="sticky top-0 z-[60] border-b border-line bg-void/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-4">
+          <Link to="/" aria-label={snapshot?.club.name ?? '3SixBookClub'}>
+            <Wordmark />
           </Link>
 
-          <nav className="ml-2 hidden items-center gap-1 md:flex">
+          <nav className="ml-auto hidden items-center gap-7 md:flex">
             {NAV.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `relative rounded-full px-3 py-1.5 text-sm transition ${
-                    isActive ? 'bg-raised text-ink' : 'text-muted hover:bg-raised/60 hover:text-ink'
+                  `relative text-[0.68rem] tracking-[0.18em] uppercase transition ${
+                    isActive ? 'text-ink' : 'text-faint hover:text-muted'
                   }`
                 }
               >
                 {item.label}
                 {item.to === '/vote' && nudge && (
-                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber" />
+                  <span
+                    className="absolute -top-1 -right-2 h-1 w-1 rounded-full bg-ink"
+                    aria-hidden
+                  />
                 )}
               </NavLink>
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2">
-            {topVotes > 0 && pathname !== '/vote' && (
-              <span className="chip hidden sm:inline-flex">🗳 {topVotes} votes in</span>
-            )}
+          <div className="ml-auto flex items-center gap-3 md:ml-0">
             <IdentityButton />
           </div>
         </div>
 
         {/* Mobile nav */}
-        <nav className="flex gap-1 overflow-x-auto border-t border-line/50 px-4 py-2 md:hidden">
+        <nav className="flex gap-6 overflow-x-auto border-t border-line px-4 py-3 md:hidden">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `shrink-0 rounded-full px-3 py-1.5 text-sm transition ${
-                  isActive ? 'bg-raised text-ink' : 'text-muted'
+                `shrink-0 text-[0.68rem] tracking-[0.18em] uppercase transition ${
+                  isActive ? 'text-ink' : 'text-faint'
                 }`
               }
             >
@@ -93,11 +85,11 @@ export function Layout() {
         </nav>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
         {error && (
-          <div className="card mb-6 border-rose/40 bg-rose/10 p-4 text-sm text-rose">
+          <div className="card mb-6 border-rose/40 p-4 text-sm text-rose">
             {error}
-            <p className="mt-1 text-xs text-rose/80">
+            <p className="mt-1 text-xs text-rose/70">
               Is the API running? Try <code>npm run dev</code>.
             </p>
           </div>
@@ -105,15 +97,12 @@ export function Layout() {
         {!snapshot ? (
           loading ? (
             <div className="flex items-center gap-3 p-10 text-sm text-muted">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-amber" />
-              Opening the club…
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-ink" />
+              Loading…
             </div>
           ) : (
-            <div className="card flex flex-col items-center gap-2 p-10 text-center">
-              <span className="text-3xl" aria-hidden>
-                🔌
-              </span>
-              <p className="font-display text-xl">Cannot reach the club</p>
+            <div className="card flex flex-col items-center gap-3 p-14 text-center">
+              <p className="font-display text-xl">The club is out of reach</p>
               <p className="max-w-md text-sm text-muted">
                 The API is not answering. Start it with <code>npm run dev</code>, or check that
                 the server is running on the same host as this page.
@@ -125,14 +114,12 @@ export function Layout() {
         )}
       </main>
 
-      <footer className="border-t border-line/70">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-faint">
+      <footer className="border-t border-line">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-[0.68rem] tracking-[0.12em] text-faint uppercase">
+          <p>{snapshot?.club.name ?? '3SixBookClub'}</p>
           <p>
-            {snapshot?.club.name} · {snapshot?.club.tagline}
-          </p>
-          <p>
-            Self-hosted, one SQLite file. {snapshot?.members.length ?? 0} members ·{' '}
-            {snapshot?.books.length ?? 0} books · {snapshot?.reviews.length ?? 0} reviews
+            {snapshot?.members.length ?? 0} members · {snapshot?.books.length ?? 0} books ·{' '}
+            {snapshot?.reviews.length ?? 0} reviews
           </p>
         </div>
       </footer>

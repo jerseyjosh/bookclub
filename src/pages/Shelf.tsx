@@ -68,7 +68,7 @@ export function Shelf() {
     <div className="flex flex-col gap-6">
       <SectionHeading
         title="The shelf"
-        subtitle="Everything we have read together, and everything we are about to."
+        subtitle="Everything we have read, and what is coming next."
         action={
           me ? (
             <Button variant="primary" onClick={() => setAdding(true)}>
@@ -105,10 +105,10 @@ export function Shelf() {
           <button
             key={option.key}
             onClick={() => setFilter(option.key)}
-            className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs transition ${
+            className={`cursor-pointer border px-3 py-1.5 text-[0.65rem] tracking-[0.12em] uppercase transition ${
               filter === option.key
-                ? 'border-amber/60 bg-amber/15 text-amber'
-                : 'border-line bg-raised/50 text-muted hover:text-ink'
+                ? 'border-ink text-ink'
+                : 'border-line text-muted hover:text-ink'
             }`}
           >
             {option.label}
@@ -129,7 +129,7 @@ export function Shelf() {
       </div>
 
       {visible.length === 0 ? (
-        <EmptyState icon="🔍" title="Nothing here yet">
+        <EmptyState title="Nothing here yet">
           Try another filter, or add a book to this month.
         </EmptyState>
       ) : (
@@ -153,17 +153,17 @@ export function Shelf() {
                     <Cover title={book.title} author={book.author} coverUrl={book.coverUrl} />
                   </div>
                   {book.status === 'current' && (
-                    <span className="absolute top-2 left-2 rounded-full bg-void/85 px-2 py-1 text-[10px] text-amber backdrop-blur">
+                    <span className="absolute top-2 left-2 bg-void/85 px-2 py-1 text-[10px] tracking-[0.12em] text-ink uppercase backdrop-blur">
                       ● Reading now
                     </span>
                   )}
                   {book.status === 'upcoming' && (
-                    <span className="absolute top-2 left-2 rounded-full bg-void/85 px-2 py-1 text-[10px] text-sky backdrop-blur">
+                    <span className="absolute top-2 left-2 bg-void/85 px-2 py-1 text-[10px] tracking-[0.12em] text-muted uppercase backdrop-blur">
                       Up next
                     </span>
                   )}
                   {bookStats?.average != null && (
-                    <span className="absolute right-2 bottom-2 rounded-full bg-void/85 px-2 py-1 text-xs text-amber backdrop-blur">
+                    <span className="absolute right-2 bottom-2 bg-void/85 px-2 py-1 text-xs text-ink backdrop-blur">
                       ★ {bookStats.average.toFixed(1)}
                     </span>
                   )}
@@ -189,7 +189,7 @@ export function Shelf() {
                       )}
                       {(reactionCounts.get(book.id) ?? 0) > 0 && (
                         <span className="text-xs text-faint">
-                          {reactionCounts.get(book.id)} 💬
+                          {reactionCounts.get(book.id)} reacting
                         </span>
                       )}
                     </div>

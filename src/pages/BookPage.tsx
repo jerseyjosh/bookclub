@@ -33,7 +33,7 @@ export function BookPage() {
 
   if (!book || !stats) {
     return (
-      <EmptyState icon="🕵️" title="We have not read that one">
+      <EmptyState title="We have not read that one">
         <Link to="/books" className="link">
           Back to the shelf
         </Link>
@@ -57,7 +57,7 @@ export function BookPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link to="/books" className="text-sm text-muted transition hover:text-amber">
+        <Link to="/books" className="text-sm text-muted transition hover:text-ink">
           ← The shelf
         </Link>
         {me && (
@@ -82,7 +82,7 @@ export function BookPage() {
       </div>
 
       <section className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <div className="mx-auto w-40 shrink-0 overflow-hidden rounded-xl border border-line shadow-lift sm:w-52 lg:mx-0">
+        <div className="mx-auto w-40 shrink-0 overflow-hidden border border-line shadow-lift sm:w-52 lg:mx-0">
           <div className="aspect-2/3">
             <Cover title={book.title} author={book.author} coverUrl={book.coverUrl} />
           </div>
@@ -117,7 +117,7 @@ export function BookPage() {
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="card p-3">
                 <p className="text-[10px] tracking-wide text-faint uppercase">Club average</p>
-                <p className="stat-num mt-1 text-amber">
+                <p className="stat-num mt-1 text-ink">
                   {stats.average === null ? '—' : stats.average.toFixed(2)}
                 </p>
               </div>
@@ -127,7 +127,7 @@ export function BookPage() {
               </div>
               <div className="card p-3">
                 <p className="text-[10px] tracking-wide text-faint uppercase">Spread</p>
-                <p className="stat-num mt-1 text-rose">
+                <p className="stat-num mt-1 text-ink">
                   {stats.spread === null ? '—' : stats.spread.toFixed(2)}
                 </p>
               </div>
@@ -157,7 +157,7 @@ export function BookPage() {
         <section>
           <SectionHeading
             title={myReview ? 'Your review' : 'Add your review'}
-            subtitle="Half stars allowed. Honesty encouraged."
+            subtitle="Half stars allowed."
           />
           {editingReview || !myReview ? (
             <ReviewEditor
@@ -178,7 +178,7 @@ export function BookPage() {
 
       <section>
         <SectionHeading
-          title={`What the club said`}
+          title="What the club said"
           subtitle={
             bookReviews.length
               ? `${bookReviews.length} of ${members.length} members have rated it.`

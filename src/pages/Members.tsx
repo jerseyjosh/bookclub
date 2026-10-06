@@ -23,7 +23,7 @@ export function Members() {
     <div className="flex flex-col gap-10">
       <SectionHeading
         title="The members"
-        subtitle="Seven opinions, one book a month, no consensus in sight."
+        subtitle="Everyone in the club."
       />
 
       <section className="card overflow-hidden">
@@ -44,7 +44,7 @@ export function Members() {
               {rows.map(({ member, stats, twin, lastReview }) => (
                 <tr key={member.id} className="border-b border-line/50 transition last:border-0 hover:bg-raised/40">
                   <td className="px-4 py-3">
-                    <Link to={`/members/${member.id}`} className="flex items-center gap-3 transition hover:text-amber">
+                    <Link to={`/members/${member.id}`} className="flex items-center gap-3 transition hover:text-ink">
                       <Avatar member={member} size={32} />
                       <span>{member.name}</span>
                     </Link>
@@ -62,7 +62,7 @@ export function Members() {
                     {stats.generosity === null ? (
                       <span className="text-faint">—</span>
                     ) : (
-                      <span className={stats.generosity >= 0 ? 'text-sage' : 'text-rose'}>
+                      <span className={stats.generosity >= 0 ? 'text-ink' : 'text-muted'}>
                         {stats.generosity >= 0 ? '+' : ''}
                         {stats.generosity.toFixed(2)}
                       </span>
@@ -75,7 +75,7 @@ export function Members() {
                     {twin ? (
                       <Link
                         to={`/members/${twin.member.id}`}
-                        className="flex items-center gap-2 text-muted transition hover:text-amber"
+                        className="flex items-center gap-2 text-muted transition hover:text-ink"
                         title={`${Math.round(twin.value * 100)}% taste match`}
                       >
                         <Avatar member={twin.member} size={22} />
@@ -101,7 +101,7 @@ export function Members() {
       <section className="card p-5 sm:p-6">
         <SectionHeading
           title="Who rated what"
-          subtitle="Every member against every book, darkest red is harshest, brightest amber is wildest enthusiasm."
+          subtitle="Every member against every book, shaded by score."
         />
         <MemberBookHeatmap books={books} members={members} reviews={reviews} />
         <div className="mt-4 flex justify-end">
@@ -137,7 +137,7 @@ export function Members() {
                     {stats.count} {stats.count === 1 ? 'book' : 'books'} reviewed
                   </p>
                 </div>
-                <span className="ml-auto font-display text-2xl text-amber">
+                <span className="ml-auto font-display text-2xl text-ink">
                   {stats.average === null ? '—' : stats.average.toFixed(2)}
                 </span>
               </div>
@@ -145,9 +145,9 @@ export function Members() {
               <Stars value={stats.average} size={14} />
 
               <div className="flex flex-wrap items-center gap-2">
-                {stats.favoriteGenre && <Chip tone="sage">❤ {stats.favoriteGenre}</Chip>}
+                {stats.favoriteGenre && <Chip tone="sage">{stats.favoriteGenre}</Chip>}
                 {stats.generosity !== null && Math.abs(stats.generosity) > 0.15 && (
-                  <Chip tone={stats.generosity > 0 ? 'amber' : 'rose'}>
+                  <Chip tone={stats.generosity > 0 ? 'sage' : 'default'}>
                     {stats.generosity > 0 ? 'generous' : 'tough crowd'}
                   </Chip>
                 )}

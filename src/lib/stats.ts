@@ -237,7 +237,7 @@ export function computeSuperlatives(
       headline: book?.title ?? '',
       detail: `Averaged ${(favourite[1].average ?? 0).toFixed(2)} from ${favourite[1].count} of us`,
       to: book ? `/books/${book.id}` : undefined,
-      accent: 'text-amber',
+      accent: 'text-ink',
     })
   }
 
@@ -255,7 +255,7 @@ export function computeSuperlatives(
       headline: book?.title ?? '',
       detail: `Ratings ran from ${lo} to ${hi} stars`,
       to: book ? `/books/${book.id}` : undefined,
-      accent: 'text-rose',
+      accent: 'text-ink',
     })
   }
 
@@ -275,7 +275,7 @@ export function computeSuperlatives(
       headline: harshest.member.name,
       detail: `Averages ${harshest.avg.toFixed(2)} stars, the lowest in the club`,
       to: `/members/${harshest.member.id}`,
-      accent: 'text-sky',
+      accent: 'text-ink',
     })
   }
 
@@ -291,7 +291,7 @@ export function computeSuperlatives(
       headline: kindest.member.name,
       detail: `Hands out ${kindest.avg.toFixed(2)} stars on average`,
       to: `/members/${kindest.member.id}`,
-      accent: 'text-sage',
+      accent: 'text-ink',
     })
   }
 
@@ -309,7 +309,7 @@ export function computeSuperlatives(
       headline: mostActive.member.name,
       detail: `Reviewed ${mostActive.count} of ${books.filter((b) => b.status !== 'upcoming').length} books`,
       to: `/members/${mostActive.member.id}`,
-      accent: 'text-amber-soft',
+      accent: 'text-ink',
     })
   }
 
@@ -320,24 +320,20 @@ export function computeSuperlatives(
  * Colour scales for heatmaps
  * ------------------------------------------------------------------ */
 
-/** Warm heat scale: dusty red (low) → amber (high). Returns an hsl() string. */
+/** Monochrome heat scale: darker is a harsher score, lighter is keener. */
 export function ratingColor(rating: number | null, alpha = 1): string {
-  if (rating === null) return `hsl(35 10% 22% / ${alpha})`
+  if (rating === null) return `hsl(0 0% 20% / ${alpha})`
   const t = Math.max(0, Math.min(1, (rating - 0.5) / 4.5))
-  const hue = 8 + t * 32
-  const sat = 30 + t * 55
-  const light = 20 + t * 40
-  return `hsl(${hue} ${sat}% ${light}% / ${alpha})`
+  const light = 18 + t * 70
+  return `hsl(0 0% ${light}% / ${alpha})`
 }
 
-/** Diverging scale for correlations: -1 = cold blue, +1 = warm amber. */
+/** Diverging scale for correlations: -1 dark, +1 light. */
 export function correlationColor(value: number | null): string {
-  if (value === null) return 'hsl(35 10% 20%)'
+  if (value === null) return 'hsl(0 0% 18%)'
   const t = (value + 1) / 2
-  const hue = 205 - t * 170
-  const sat = 25 + Math.abs(t - 0.5) * 70
-  const light = 24 + Math.abs(t - 0.5) * 24
-  return `hsl(${hue} ${sat}% ${light}%)`
+  const light = 16 + t * 68
+  return `hsl(0 0% ${light}%)`
 }
 
 /* ------------------------------------------------------------------ *

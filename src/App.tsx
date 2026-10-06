@@ -12,9 +12,9 @@ import { Link } from 'react-router-dom'
 
 function NotFound() {
   return (
-    <EmptyState icon="🧭" title="This page is not in the library">
+    <EmptyState title="Page not found">
       <Link to="/" className="link">
-        Back to the clubhouse
+        Back to the overview
       </Link>
     </EmptyState>
   )

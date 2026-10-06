@@ -114,7 +114,7 @@ export function BookFormModal({
   return (
     <Modal open={open} onClose={onClose} title={book ? 'Edit book' : 'Add a book'} wide>
       {!book && (
-        <div className="mb-5 rounded-xl border border-line bg-void/40 p-3">
+        <div className="mb-5 border border-line bg-void/40 p-3">
           <span className="label">Autofill from Open Library</span>
           <div className="flex gap-2">
             <input
@@ -139,9 +139,9 @@ export function BookFormModal({
                 <li key={`${result.title}-${index}`}>
                   <button
                     onClick={() => applyResult(result)}
-                    className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition hover:border-line hover:bg-raised"
+                    className="flex w-full cursor-pointer items-center gap-3 border border-transparent px-2 py-2 text-left transition hover:border-line hover:bg-raised"
                   >
-                    <span className="h-12 w-8 shrink-0 overflow-hidden rounded-sm border border-line bg-raised">
+                    <span className="h-12 w-8 shrink-0 overflow-hidden border border-line bg-raised">
                       <Cover title={result.title} coverUrl={result.coverUrl} compact />
                     </span>
                     <span className="min-w-0">

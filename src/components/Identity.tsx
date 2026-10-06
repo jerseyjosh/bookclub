@@ -2,25 +2,6 @@ import { useState } from 'react'
 import { useClub } from '../lib/club.tsx'
 import { Avatar, Button, Field, Modal } from './ui.tsx'
 
-const EMOJI_CHOICES = [
-  '📚',
-  '🦉',
-  '🌙',
-  '🎧',
-  '🌿',
-  '🍕',
-  '🔭',
-  '☕',
-  '🐙',
-  '🦊',
-  '🐝',
-  '🧠',
-  '🎲',
-  '🕯️',
-  '🪐',
-  '🍄',
-]
-
 export function IdentityButton({
   primary = false,
   label,
@@ -40,19 +21,19 @@ export function IdentityButton({
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex cursor-pointer items-center gap-2 rounded-full border border-line bg-raised/70 py-1 pr-3 pl-1 text-sm transition hover:border-amber/50"
+          className="flex cursor-pointer items-center gap-2 border border-line py-1 pr-3 pl-1 text-[0.68rem] tracking-[0.14em] text-muted uppercase transition hover:border-ink/40 hover:text-ink"
         >
           {me ? (
             <>
-              <Avatar member={me} size={26} />
-              <span className="hidden text-muted sm:inline">{me.name}</span>
+              <Avatar member={me} size={24} />
+              <span className="hidden sm:inline">{me.name}</span>
             </>
           ) : (
             <>
-              <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-high text-xs">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line text-xs">
                 ?
               </span>
-              <span className="hidden text-muted sm:inline">Who are you?</span>
+              <span className="hidden sm:inline">Identify</span>
             </>
           )}
         </button>
@@ -72,7 +53,6 @@ export function IdentityButton({
 function IdentityPanel({ onClose }: { onClose: () => void }) {
   const { snapshot, me, setMe, actions } = useClub()
   const [name, setName] = useState('')
-  const [emoji, setEmoji] = useState(EMOJI_CHOICES[0] ?? '📚')
   const [passcode, setPasscode] = useState('')
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -85,7 +65,6 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
         <Field label="Display name">
           <input className="input" value={name || me.name} onChange={(e) => setName(e.target.value)} />
         </Field>
-        <EmojiPicker value={emoji || me.emoji} onChange={setEmoji} />
         <div className="flex justify-end gap-2">
           <Button variant="ghost" onClick={() => setEditing(false)}>
             Cancel
@@ -95,13 +74,13 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
             disabled={busy}
             onClick={async () => {
               setBusy(true)
-              await actions.updateProfile({ name: name || me.name, emoji: emoji || me.emoji })
+              await actions.updateProfile({ name: name || me.name })
               setBusy(false)
               setEditing(false)
               onClose()
             }}
           >
-            Save profile
+            Save
           </Button>
         </div>
       </div>
@@ -124,11 +103,10 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
           <Button
             onClick={() => {
               setName(me.name)
-              setEmoji(me.emoji)
               setEditing(true)
             }}
           >
-            Edit name & emoji
+            Edit name
           </Button>
           <Button
             variant="ghost"
@@ -173,7 +151,7 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
                   setMe(member.id)
                   onClose()
                 }}
-                className="flex cursor-pointer items-center gap-2 rounded-xl border border-line bg-void/40 px-3 py-2 text-left transition hover:border-amber/50 hover:bg-raised"
+                className="flex cursor-pointer items-center gap-2 border border-line px-3 py-2 text-left transition hover:border-ink/40 hover:bg-raised"
               >
                 <Avatar member={member} size={26} />
                 <span className="truncate text-sm">{member.name}</span>
@@ -193,7 +171,6 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
             maxLength={30}
             onChange={(e) => setName(e.target.value)}
           />
-          <EmojiPicker value={emoji} onChange={setEmoji} />
           {requiresPasscode && (
             <input
               className="input"
@@ -209,7 +186,7 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
             onClick={async () => {
               setBusy(true)
               try {
-                await actions.join(name.trim(), emoji, passcode)
+                await actions.join(name.trim(), '', passcode)
                 onClose()
               } catch {
                 /* toast */
@@ -221,29 +198,6 @@ function IdentityPanel({ onClose }: { onClose: () => void }) {
             {busy ? 'Joining…' : 'Join the club'}
           </Button>
         </div>
-      </div>
-    </div>
-  )
-}
-
-function EmojiPicker({ value, onChange }: { value: string; onChange: (emoji: string) => void }) {
-  return (
-    <div>
-      <span className="label">Pick your face</span>
-      <div className="flex flex-wrap gap-1.5">
-        {EMOJI_CHOICES.map((emoji) => (
-          <button
-            key={emoji}
-            onClick={() => onChange(emoji)}
-            className={`h-9 w-9 cursor-pointer rounded-lg border text-lg transition ${
-              value === emoji
-                ? 'border-amber/70 bg-amber/15'
-                : 'border-line bg-void/40 hover:border-amber/40'
-            }`}
-          >
-            {emoji}
-          </button>
-        ))}
       </div>
     </div>
   )

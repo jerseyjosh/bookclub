@@ -79,16 +79,15 @@ export function Vote() {
   return (
     <div className="flex flex-col gap-8">
       <SectionHeading
-        title="What we read next"
-        subtitle={`The shortlist for ${monthLabel(nextSlot.month, nextSlot.year)}. Add an idea, vote for as many as you like.`}
+        title="The shortlist"
+        subtitle={`What we are choosing between for ${monthLabel(nextSlot.month, nextSlot.year)}. Add an idea, vote for as many as you like.`}
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex flex-col gap-4">
           {sorted.length === 0 && (
-            <EmptyState icon="🗳" title="No nominations yet">
-              Be the first to put a book forward. Anything goes — novels, non-fiction, graphic novels,
-              the weird one you have been meaning to read.
+            <EmptyState title="No nominations yet">
+              Put the first book forward.
             </EmptyState>
           )}
 
@@ -104,11 +103,11 @@ export function Vote() {
               <article
                 key={nomination.id}
                 className={`card animate-rise flex gap-4 p-4 ${
-                  isLeader ? 'border-amber/50 shadow-lift' : ''
+                  isLeader ? 'border-ink/40 shadow-lift' : ''
                 }`}
               >
                 <div className="flex w-10 shrink-0 flex-col items-center">
-                  <span className="font-display text-3xl text-amber">
+                  <span className="font-display text-3xl text-ink">
                     {nomination.voterIds.length}
                   </span>
                   <span className="text-[10px] tracking-wide text-faint uppercase">
@@ -118,7 +117,7 @@ export function Vote() {
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    {isLeader && <Chip tone="amber">🏆 Leading</Chip>}
+                    {isLeader && <Chip>Leading</Chip>}
                     <h3 className="font-display text-xl">{nomination.title}</h3>
                   </div>
                   {nomination.author && (
@@ -164,7 +163,7 @@ export function Vote() {
 
         <aside className="flex flex-col gap-4">
           {leader && (
-            <div className="card border-amber/40 p-5">
+            <div className="card border-ink/40 p-5">
               <p className="text-xs font-semibold tracking-wide text-faint uppercase">
                 Currently winning
               </p>
@@ -207,7 +206,7 @@ export function Vote() {
 
           {current && (
             <div className="card flex items-center gap-3 p-4">
-              <div className="h-16 w-11 shrink-0 overflow-hidden rounded border border-line">
+              <div className="h-16 w-11 shrink-0 overflow-hidden border border-line">
                 <Cover title={current.title} coverUrl={current.coverUrl} compact />
               </div>
               <div className="min-w-0">
@@ -224,7 +223,7 @@ export function Vote() {
       <section className="card p-5 sm:p-6">
         <SectionHeading
           title="Put a book forward"
-          subtitle="Anything you would genuinely read. One nomination each is plenty, but we will not stop you."
+          subtitle="Anything you would actually read."
         />
         {me ? (
           <div className="grid gap-4 sm:grid-cols-2">

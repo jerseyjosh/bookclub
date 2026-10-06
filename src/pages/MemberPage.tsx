@@ -14,7 +14,7 @@ export function MemberPage() {
   const member = members.find((m) => m.id === id)
   if (!member) {
     return (
-      <EmptyState icon="🫥" title="No such member">
+      <EmptyState title="No such member">
         <Link to="/members" className="link">
           Back to the members
         </Link>
@@ -46,7 +46,7 @@ export function MemberPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Link to="/members" className="text-sm text-muted transition hover:text-amber">
+      <Link to="/members" className="text-sm text-muted transition hover:text-ink">
         ← All members
       </Link>
 
@@ -62,7 +62,7 @@ export function MemberPage() {
               </p>
             </div>
             <div className="ml-auto text-right">
-              <p className="font-display text-4xl text-amber">
+              <p className="font-display text-4xl text-ink">
                 {stats.average === null ? '—' : stats.average.toFixed(2)}
               </p>
               <Stars value={stats.average} size={14} />
@@ -70,9 +70,9 @@ export function MemberPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {stats.favoriteGenre && <Chip tone="sage">❤ {stats.favoriteGenre}</Chip>}
+            {stats.favoriteGenre && <Chip tone="sage">{stats.favoriteGenre}</Chip>}
             {stats.generosity !== null && (
-              <Chip tone={stats.generosity >= 0 ? 'amber' : 'rose'}>
+              <Chip tone={stats.generosity >= 0 ? 'sage' : 'default'}>
                 {stats.generosity >= 0 ? '+' : ''}
                 {stats.generosity.toFixed(2)} vs the club
                 {base !== null && ` (${base.toFixed(2)})`}
@@ -82,14 +82,10 @@ export function MemberPage() {
               <Chip>{stats.spread.toFixed(2)} star spread</Chip>
             )}
             {bestBook?.review && (
-              <Chip tone="amber">
-                Loved {bestBook.book.title} ({bestBook.review.rating}★)
-              </Chip>
+              <Chip>Loved {bestBook.book.title} ({bestBook.review.rating}★)</Chip>
             )}
             {worstBook?.review && worstBook.review.rating <= 3 && (
-              <Chip tone="rose">
-                Hated {worstBook.book.title} ({worstBook.review.rating}★)
-              </Chip>
+              <Chip>Hated {worstBook.book.title} ({worstBook.review.rating}★)</Chip>
             )}
           </div>
 
@@ -121,13 +117,13 @@ export function MemberPage() {
                   <li key={entry.member.id}>
                     <Link
                       to={`/members/${entry.member.id}`}
-                      className="flex items-center gap-3 rounded-xl p-1 transition hover:bg-raised/60"
+                      className="flex items-center gap-3 p-1 transition hover:bg-raised/60"
                     >
                       <Avatar member={entry.member} size={30} />
                       <span className="min-w-0 flex-1 truncate text-sm">{entry.member.name}</span>
                       <span
                         className={`font-display text-sm ${
-                          pct >= 0 ? 'text-sage' : 'text-rose'
+                          pct >= 0 ? 'text-ink' : 'text-muted'
                         }`}
                       >
                         {pct}%
@@ -162,7 +158,7 @@ export function MemberPage() {
             />
           ))}
           {myReviews.length === 0 && (
-            <EmptyState icon="🦗" title={`${member.name} has not reviewed anything yet`} />
+            <EmptyState title={`${member.name} has not reviewed anything yet`} />
           )}
         </div>
       </section>

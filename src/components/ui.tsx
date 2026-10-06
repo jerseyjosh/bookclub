@@ -8,6 +8,18 @@ import {
 import type { Member } from '../lib/api.ts'
 import { ratingLabel } from '../lib/api.ts'
 import { useClub } from '../lib/club.tsx'
+import { MedusaMark } from './Medusa.tsx'
+
+/** Initials for the house monogram avatars. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0] ?? '')
+    .join('')
+    .toUpperCase()
+}
 
 /* ------------------------------------------------------------------ *
  * Avatar
@@ -28,19 +40,12 @@ export function Avatar({
   return (
     <span
       title={title ?? member.name}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-medium select-none ${
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-line bg-raised font-light tracking-wider text-muted select-none ${
         ring ? 'ring-2 ring-void' : ''
       }`}
-      style={{
-        width: size,
-        height: size,
-        fontSize: size * 0.5,
-        background: `${member.color}26`,
-        color: member.color,
-        border: `1px solid ${member.color}66`,
-      }}
+      style={{ width: size, height: size, fontSize: Math.max(9, Math.round(size * 0.36)) }}
     >
-      <span aria-hidden>{member.emoji}</span>
+      <span aria-hidden>{initials(member.name)}</span>
       <span className="sr-only">{member.name}</span>
     </span>
   )
@@ -66,7 +71,7 @@ export function AvatarStack({
       ))}
       {extra > 0 && (
         <span
-          className="-ml-2 inline-flex items-center justify-center rounded-full bg-high text-xs text-muted ring-2 ring-void"
+          className="-ml-2 inline-flex items-center justify-center rounded-full border border-line bg-high text-xs text-muted ring-2 ring-void"
           style={{ width: size, height: size }}
         >
           +{extra}
@@ -195,12 +200,12 @@ export function RatingBadge({
  * ------------------------------------------------------------------ */
 
 const SPINE_GRADIENTS = [
-  ['#3b2f23', '#6b4a2a'],
-  ['#22303a', '#33566b'],
-  ['#2f2a3a', '#54406b'],
-  ['#2b3630', '#40614c'],
-  ['#3a2626', '#6b3a3a'],
-  ['#3a3322', '#6b5a2a'],
+  ['#1b1b1b', '#333333'],
+  ['#161616', '#2b2b2b'],
+  ['#1e1e1e', '#3a3a3a'],
+  ['#141414', '#262626'],
+  ['#202020', '#383838'],
+  ['#181818', '#303030'],
 ]
 
 function hash(text: string): number {
@@ -266,10 +271,10 @@ export function SectionHeading({
   action?: ReactNode
 }) {
   return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+    <div className="mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-line pb-3">
       <div>
-        <h2 className="font-display text-2xl">{title}</h2>
-        {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
+        <h2 className="eyebrow">{title}</h2>
+        {subtitle && <p className="mt-2 max-w-prose text-sm text-muted">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -307,13 +312,10 @@ export function ProgressBar({
 }) {
   const clamped = Math.max(0, Math.min(100, percent))
   return (
-    <div className={`h-2 w-full overflow-hidden rounded-full bg-void/70 ${className}`}>
+    <div className={`h-1 w-full overflow-hidden bg-high ${className}`}>
       <div
-        className="h-full rounded-full transition-[width] duration-500"
-        style={{
-          width: `${clamped}%`,
-          background: color ?? 'linear-gradient(90deg, #b8803c, #e0a458)',
-        }}
+        className="h-full transition-[width] duration-500"
+        style={{ width: `${clamped}%`, background: color ?? 'var(--color-ink)' }}
       />
     </div>
   )
@@ -327,15 +329,15 @@ export function Chip({
   tone?: 'default' | 'amber' | 'sage' | 'rose' | 'sky'
 }) {
   const tones = {
-    default: 'border-line bg-raised/80 text-muted',
-    amber: 'border-amber/40 bg-amber/10 text-amber-soft',
-    sage: 'border-sage/40 bg-sage/10 text-sage',
-    rose: 'border-rose/40 bg-rose/10 text-rose',
-    sky: 'border-sky/40 bg-sky/10 text-sky',
+    default: 'border-line text-muted',
+    amber: 'border-ink/40 text-ink',
+    sage: 'border-ink/20 text-amber-soft',
+    rose: 'border-rose/50 text-rose',
+    sky: 'border-line text-sky',
   }
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs ${tones[tone]}`}
+      className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[0.65rem] tracking-[0.12em] uppercase ${tones[tone]}`}
     >
       {children}
     </span>
@@ -365,19 +367,17 @@ export function Button({
 }
 
 export function EmptyState({
-  icon = '📖',
   title,
   children,
 }: {
+  /** Accepted for call-site compatibility; the house style has no emoji. */
   icon?: string
   title: string
   children?: ReactNode
 }) {
   return (
-    <div className="card flex flex-col items-center gap-2 px-6 py-12 text-center">
-      <span className="text-3xl" aria-hidden>
-        {icon}
-      </span>
+    <div className="card flex flex-col items-center gap-3 px-6 py-16 text-center">
+      <MedusaMark className="h-8 w-8 text-line" />
       <p className="font-display text-xl">{title}</p>
       {children && <div className="max-w-md text-sm text-muted">{children}</div>}
     </div>
@@ -450,7 +450,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`animate-rise relative my-auto w-full ${wide ? 'max-w-3xl' : 'max-w-lg'} card bg-surface p-5 shadow-lift`}
+        className={`animate-rise relative my-auto w-full ${wide ? 'max-w-3xl' : 'max-w-lg'} card bg-surface p-6 shadow-lift`}
       >
         <div className="mb-4 flex items-center justify-between gap-4">
           <h2 className="font-display text-xl">{title}</h2>
@@ -476,10 +476,10 @@ export function ToastViewport() {
         <button
           key={toast.id}
           onClick={() => dismissToast(toast.id)}
-          className={`animate-rise pointer-events-auto rounded-xl border px-4 py-3 text-left text-sm shadow-lift backdrop-blur ${
+          className={`animate-rise pointer-events-auto border px-4 py-3 text-left text-sm shadow-lift backdrop-blur ${
             toast.tone === 'error'
-              ? 'border-rose/50 bg-rose/15 text-rose'
-              : 'border-amber/40 bg-raised/95 text-ink'
+              ? 'border-rose/50 bg-rose/10 text-rose'
+              : 'border-line bg-raised/95 text-ink'
           }`}
         >
           {toast.message}
@@ -492,7 +492,7 @@ export function ToastViewport() {
 export function Spinner({ label = 'Loading' }: { label?: string }) {
   return (
     <div className="flex items-center gap-3 p-10 text-sm text-muted">
-      <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-amber" />
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-ink" />
       {label}…
     </div>
   )

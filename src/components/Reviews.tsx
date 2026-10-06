@@ -5,7 +5,8 @@ import { relativeTime, ratingLabel } from '../lib/api.ts'
 import { useClub } from '../lib/club.tsx'
 import { Avatar, Button, Stars } from './ui.tsx'
 
-const REACTION_EMOJI = ['🔥', '💯', '😂', '😭', '🤯', '👏']
+/** One restrained reaction: a plain agreement on someone's review. */
+const AGREE = '✓'
 
 function SpoilerText({ text }: { text: string }) {
   const [shown, setShown] = useState(false)
@@ -13,9 +14,9 @@ function SpoilerText({ text }: { text: string }) {
     return (
       <button
         onClick={() => setShown(true)}
-        className="mt-2 cursor-pointer rounded-lg border border-dashed border-line bg-void/40 px-3 py-2 text-left text-xs text-muted transition hover:border-amber/50 hover:text-ink"
+        className="mt-2 cursor-pointer border border-dashed border-line px-3 py-2 text-left text-xs text-muted transition hover:border-ink/40 hover:text-ink"
       >
-        🙈 Contains spoilers — tap to reveal
+        Contains spoilers — tap to reveal
       </button>
     )
   }
@@ -36,14 +37,10 @@ export function ReviewCard({
   onEdit?: () => void
 }) {
   const { me, actions } = useClub()
-  const [showPicker, setShowPicker] = useState(false)
 
   const mine = reactions.filter((r) => r.reviewId === review.id)
-  const grouped = REACTION_EMOJI.map((emoji) => ({
-    emoji,
-    count: mine.filter((r) => r.emoji === emoji).length,
-    active: mine.some((r) => r.emoji === emoji && r.memberId === me?.id),
-  })).filter((entry) => entry.count > 0 || entry.emoji === '🔥')
+  const agreeCount = mine.length
+  const agreed = mine.some((r) => r.memberId === me?.id)
 
   const canEdit = me && member && me.id === member.id
 
@@ -77,53 +74,23 @@ export function ReviewCard({
           <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-ink/90">{review.body}</p>
         ))}
 
-      <footer className="mt-3 flex flex-wrap items-center gap-1.5">
-        {grouped
-          .filter((entry) => entry.count > 0)
-          .map((entry) => (
-            <button
-              key={entry.emoji}
-              onClick={() => me && void actions.react(review.id, entry.emoji)}
-              disabled={!me}
-              className={`cursor-pointer rounded-full border px-2 py-0.5 text-xs transition disabled:cursor-default ${
-                entry.active
-                  ? 'border-amber/60 bg-amber/15 text-amber'
-                  : 'border-line bg-raised/60 text-muted hover:border-amber/40'
-              }`}
-            >
-              {entry.emoji} {entry.count}
-            </button>
-          ))}
-
-        {showPicker ? (
-          <span className="inline-flex items-center gap-1">
-            {REACTION_EMOJI.map((emoji) => (
-              <button
-                key={emoji}
-                onClick={() => {
-                  setShowPicker(false)
-                  void actions.react(review.id, emoji)
-                }}
-                className="cursor-pointer rounded-full px-1.5 py-0.5 text-sm transition hover:bg-raised"
-              >
-                {emoji}
-              </button>
-            ))}
-          </span>
-        ) : (
-          <button
-            onClick={() => setShowPicker(true)}
-            disabled={!me}
-            className="cursor-pointer rounded-full border border-dashed border-line px-2 py-0.5 text-xs text-faint transition hover:border-amber/40 hover:text-ink disabled:cursor-default"
-          >
-            + react
-          </button>
-        )}
+      <footer className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => me && void actions.react(review.id, AGREE)}
+          disabled={!me}
+          className={`cursor-pointer border px-2.5 py-1 text-[0.65rem] tracking-[0.12em] uppercase transition disabled:cursor-default ${
+            agreed
+              ? 'border-ink bg-ink text-void'
+              : 'border-line text-muted hover:border-ink/40 hover:text-ink'
+          }`}
+        >
+          Agree{agreeCount > 0 ? ` · ${agreeCount}` : ''}
+        </button>
 
         {canEdit && onEdit && (
           <button
             onClick={onEdit}
-            className="ml-auto cursor-pointer text-xs text-faint transition hover:text-amber"
+            className="ml-auto cursor-pointer text-xs text-faint transition hover:text-ink"
           >
             Edit your review
           </button>
@@ -190,7 +157,7 @@ export function ReviewEditor({
             type="checkbox"
             checked={spoiler}
             onChange={(e) => setSpoiler(e.target.checked)}
-            className="h-4 w-4 accent-amber"
+            className="h-4 w-4 accent-ink"
           />
           Hide behind a spoiler warning
         </label>
@@ -237,7 +204,7 @@ export function YourRating({
     <div className="flex items-center gap-2 text-xs text-muted">
       <span>You:</span>
       <Stars value={review?.rating ?? null} onChange={onRate} size={16} />
-      {review && <span className="text-amber">{ratingLabel(review.rating)}★</span>}
+      {review && <span className="text-ink">{ratingLabel(review.rating)}★</span>}
     </div>
   )
 }

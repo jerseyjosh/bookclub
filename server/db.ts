@@ -14,10 +14,10 @@ try {
 export const config = {
   port: Number(process.env.PORT ?? 3001),
   dbPath: path.resolve(ROOT, process.env.DB_PATH ?? 'data/club.db'),
-  clubName: process.env.CLUB_NAME?.trim() || 'The Book Club',
+  clubName: process.env.CLUB_NAME?.trim() || '3SixBookClub',
   clubTagline:
     process.env.CLUB_TAGLINE?.trim() ||
-    'One book a month. Strong opinions guaranteed.',
+    'One book a month.',
   passcode: process.env.CLUB_PASSCODE?.trim() || '',
   seedDemo: process.env.SEED_DEMO !== '0',
 }

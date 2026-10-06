@@ -185,7 +185,7 @@ export function createMember(input: {
   ).run(
     id,
     name,
-    input.emoji ?? '🙂',
+    input.emoji || '🙂',
     input.color ?? PALETTE[count % PALETTE.length] ?? PALETTE[0]!,
     nowIso(),
   )

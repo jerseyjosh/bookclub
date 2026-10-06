@@ -33,7 +33,7 @@ export function MemberBookHeatmap({
           {ordered.map((book) => (
             <div key={book.id} className="flex flex-col items-center gap-1">
               <div
-                className="h-14 w-9 overflow-hidden rounded-[3px] border border-line/70 bg-raised"
+                className="h-14 w-9 overflow-hidden border border-line/70 bg-raised"
                 title={`${book.title} — ${book.author}`}
               >
                 {book.coverUrl ? (
@@ -84,10 +84,15 @@ export function MemberBookHeatmap({
                         ? `${member.name} hasn’t rated ${book.title}`
                         : `${member.name} gave ${book.title} ${ratingLabel(rating)}★`
                     }
-                    className="flex h-9 items-center justify-center rounded-md border border-line/40 text-[11px] font-medium transition hover:scale-105"
+                    className="flex h-9 items-center justify-center border border-line/40 text-[11px] font-medium transition hover:scale-105"
                     style={{
                       background: ratingColor(rating ?? null),
-                      color: rating === undefined ? '#5f574b' : 'rgba(255,255,255,0.92)',
+                      color:
+                        rating === undefined
+                          ? '#4a4a4a'
+                          : rating >= 3
+                            ? '#0a0a0a'
+                            : '#f4f4f4',
                     }}
                   >
                     {rating === undefined ? '·' : ratingLabel(rating)}
@@ -109,7 +114,7 @@ export function MemberBookHeatmap({
           {ordered.map((book) => {
             const stats = computeBookStats(book.id, reviews)
             return (
-              <div key={book.id} className="text-center font-display text-xs text-amber">
+              <div key={book.id} className="text-center font-display text-xs text-ink">
                 {stats.average === null ? '—' : stats.average.toFixed(1)}
               </div>
             )
@@ -125,7 +130,7 @@ export function RatingLegend() {
   return (
     <div className="flex items-center gap-2 text-xs text-faint">
       <span>Harsh</span>
-      <div className="flex overflow-hidden rounded-full border border-line">
+      <div className="flex overflow-hidden border border-line">
         {steps.map((step) => (
           <span
             key={step}
@@ -187,7 +192,7 @@ export function TasteMatrix({
                   return (
                     <div
                       key={col.id}
-                      className="flex h-12 items-center justify-center rounded-lg border border-line/60 bg-raised/60 text-[10px] text-faint"
+                      className="flex h-12 items-center justify-center border border-line/60 bg-raised/60 text-[10px] text-faint"
                     >
                       self
                     </div>
@@ -199,7 +204,7 @@ export function TasteMatrix({
                   return (
                     <div
                       key={col.id}
-                      className="flex h-12 items-center justify-center rounded-lg border border-line/40 text-[10px] text-faint"
+                      className="flex h-12 items-center justify-center border border-line/40 text-[10px] text-faint"
                       title={`Not enough shared books yet (${entry?.shared ?? 0})`}
                     >
                       —
@@ -211,10 +216,10 @@ export function TasteMatrix({
                   <div
                     key={col.id}
                     title={`${row.name} and ${col.name}: ${pct}% taste match over ${entry?.shared ?? 0} shared books`}
-                    className="flex h-12 flex-col items-center justify-center rounded-lg border border-line/40 transition hover:scale-105"
+                    className="flex h-12 flex-col items-center justify-center border border-line/40 transition hover:scale-105"
                     style={{
                       background: correlationColor(value),
-                      color: 'rgba(255,255,255,0.92)',
+                      color: value > 0.25 ? '#0a0a0a' : '#f4f4f4',
                     }}
                   >
                     <span className="font-display text-sm">{pct}</span>
@@ -235,7 +240,7 @@ export function CorrelationLegend() {
   return (
     <div className="flex items-center gap-2 text-xs text-faint">
       <span>Opposites</span>
-      <div className="flex overflow-hidden rounded-full border border-line">
+      <div className="flex overflow-hidden border border-line">
         {steps.map((step) => (
           <span
             key={step}
