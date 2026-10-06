@@ -3,11 +3,28 @@
  *
  * An original, stylised gorgon head — a face framed by a crown of curling
  * serpents. It is drawn from scratch for this project and is not the Versace
- * trademark; drop in a licensed asset if the club ever needs the real one.
+ * trademark.
  *
  * Everything is stroked in `currentColor`, so the mark inherits whatever
  * colour its container sets (white on black, black on white, …).
+ *
+ * ── Swapping in your own artwork ──────────────────────────────────────────
+ * Drop a file at `src/assets/house-mark.<ext>` (png, svg, jpg, webp …) and it
+ * is picked up automatically at build time, replacing the drawing below
+ * everywhere it is used. Delete the file to go back to the drawn mark.
+ *
+ * Note: an image loaded this way cannot inherit `currentColor`, so a custom
+ * mark will not flip colour with the theme the way the inline SVG does.
  */
+
+/** Auto-discovered override. Empty (→ drawn fallback) when no file is present. */
+const customMark = Object.values(
+  import.meta.glob('../assets/house-mark.*', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+  }) as Record<string, string>,
+)[0]
 
 interface Curl {
   angle: number
@@ -31,6 +48,10 @@ const CURLS: Curl[] = [
 ]
 
 export function MedusaMark({ className = '' }: { className?: string }) {
+  if (customMark) {
+    return <img src={customMark} alt="" aria-hidden className={className} />
+  }
+
   return (
     <svg
       viewBox="0 0 64 64"
