@@ -13,6 +13,8 @@ try {
 
 export const config = {
   port: Number(process.env.PORT ?? 3001),
+  /** Bind address. Keep this on 127.0.0.1 when Caddy/nginx is in front. */
+  host: process.env.HOST?.trim() || '0.0.0.0',
   dbPath: path.resolve(ROOT, process.env.DB_PATH ?? 'data/club.db'),
   clubName: process.env.CLUB_NAME?.trim() || '3SixBookClub',
   clubTagline:

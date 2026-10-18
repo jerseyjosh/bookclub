@@ -55,12 +55,15 @@ if (!isSeeded() && config.seedDemo) {
   }
 }
 
-app.listen(config.port, () => {
+const shownHost = config.host === '0.0.0.0' || config.host === '::' ? 'localhost' : config.host
+
+app.listen(config.port, config.host, () => {
   console.log('')
   console.log(`  📚  ${config.clubName}`)
   console.log(`      ${config.clubTagline}`)
   console.log('')
-  console.log(`      API        http://localhost:${config.port}/api/club`)
+  console.log(`      Listening  http://${shownHost}:${config.port}`)
+  console.log(`      API        http://${shownHost}:${config.port}/api/club`)
   console.log(`      Database   ${config.dbPath}`)
   if (config.passcode) console.log('      Passcode   required to join')
   if (!hasBuild) console.log('      UI         npm run dev (Vite on :5173)')

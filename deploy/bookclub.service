@@ -1,0 +1,36 @@
+[Unit]
+Description=3SixBookClub
+Documentation=file:///home/pi/repo/bookclub/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/repo/bookclub
+Environment=NODE_ENV=production
+EnvironmentFile=-/home/pi/repo/bookclub/.env
+# /usr/local/bin/bookclub-node is a symlink to the Node 22 binary; the
+# system Node 18 is too old. See deploy/README.md.
+ExecStart=/usr/local/bin/bookclub-node node_modules/tsx/dist/cli.mjs server/index.ts
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGTERM
+TimeoutStopSec=10
+SyslogIdentifier=bookclub
+
+# Hardening: the app only ever needs to write its data and backups.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/pi/repo/bookclub/data /home/pi/repo/bookclub/backups
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

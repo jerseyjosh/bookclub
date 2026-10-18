@@ -1,0 +1,51 @@
+# 3SixBookClub — Caddy reverse proxy
+#
+# The site address comes from BOOKCLUB_DOMAIN (see /etc/caddy/caddy.env):
+#
+#   BOOKCLUB_DOMAIN=bookclub.example.com   automatic HTTPS on :443
+#   BOOKCLUB_DOMAIN=:8080                  plain HTTP on :8080
+#
+# An empty/unset value falls back to :8080. The app itself listens on
+# 127.0.0.1:3001 only (HOST=127.0.0.1 in the app's .env), so all traffic
+# has to come through Caddy.
+
+{
+	admin 127.0.0.1:2019
+	# Uncomment and set if you want Let's Encrypt expiry mail.
+	# email {$ACME_EMAIL}
+}
+
+{$BOOKCLUB_DOMAIN::8080} {
+	encode zstd gzip
+
+	reverse_proxy 127.0.0.1:3001 {
+		header_up X-Real-IP {remote_host}
+	}
+
+	# Hashed asset filenames never change, so let browsers keep them.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		# Book covers are remote images, everything else is same-origin.
+		Content-Security-Policy "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'"
+	}
+
+	# The club is private. If the link gets out, put one shared password in
+	# front of the whole site:
+	#
+	#   caddy hash-password --plaintext 'choose-a-password'
+	#
+	# then uncomment this block and paste the hash (single quotes are important):
+	#
+	# basic_auth {
+	# 	club '$2a$14$...'
+	# }
+
+	log
+}

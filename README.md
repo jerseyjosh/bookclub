@@ -85,6 +85,7 @@ Copy `.env.example` to `.env` — every value is optional.
 | Variable         | Default             | What it does                                        |
 | ---------------- | ------------------- | --------------------------------------------------- |
 | `PORT`           | `3001`              | Port for the API and the built site                 |
+| `HOST`           | `0.0.0.0`           | Bind address; set `127.0.0.1` behind Caddy/nginx    |
 | `DB_PATH`        | `data/club.db`      | Where the SQLite file lives                         |
 | `CLUB_NAME`      | `3SixBookClub`      | Shown in the header and browser tab                 |
 | `CLUB_TAGLINE`   | `One book a month…` | Shown in the footer                                 |
